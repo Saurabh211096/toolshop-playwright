@@ -11,7 +11,7 @@ test('login page has the Login title', async ({ page }) => {
     await expect(page).toHaveTitle(/Login/);
 });
 
-test('contact page has the Contact title', async ({ page }) => {
+test('contact page shows the Contact title', async ({ page }) => {
     await page.goto('https://practicesoftwaretesting.com/contact');
     await expect(page).toHaveTitle(/Contact/);
 });
