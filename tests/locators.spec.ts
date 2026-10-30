@@ -26,5 +26,6 @@ test.describe('element visibility and locators', () => {
         await expect(page.getByTestId('forgot-password-link')).toBeVisible(); // the "Forgot your Password?" link
         await expect(page.getByRole('link', { name: 'Sign in' })).toBeVisible();
         await expect(page.getByRole('link', { name: 'Documentation' })).toBeVisible();
+        await expect(page.getByRole('button', { name: ' Sign in with Google ' })).toBeVisible();
     });
 });
