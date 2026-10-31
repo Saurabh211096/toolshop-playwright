@@ -22,16 +22,30 @@ test.describe('Login', () => {
         await expect(page.getByRole('link', { name: 'Register your account' })).not.toBeVisible();
         await page.locator('#menu').click();
         await page.getByText('Sign out').click();
+        await expect(page.getByTestId('nav-menu')).not.toBeVisible();
     });
 
     test('wrong password shows an error', async ({ page }) => {
         await page.getByLabel('Email address').fill('admin@practicesoftwaretesting.com');
         await expect(page.getByTestId('email')).toHaveValue('admin@practicesoftwaretesting.com');
         await page.getByLabel('Password *', { exact: true }).fill('wrongpass');
-        await page.getByRole('button', { name: 'Login' }).click();
+        await page.getByLabel('Password *', { exact: true }).press('Enter');
         await expect(page.getByTestId('login-error')).toHaveText('Invalid email or password');
         await expect(page).toHaveURL(/login/);
         await expect(page.getByRole('heading', { name: 'My account' })).not.toBeVisible();
+    });
+
+    test('empty email shows a message', async ({ page }) => {
+        await page.getByLabel('Password *', { exact: true }).fill('Test@1234');
+        await page.getByRole('button', { name: 'Login' }).click();
+        await expect(page.getByText('Email is required')).toBeVisible();
+    });
+
+    test('email without @ shows a message', async ({ page }) => {
+        await page.getByLabel('Email address').fill('srbhingole8gmail.com');
+        await page.getByLabel('Password *', { exact: true }).fill('2110@Saurabh');
+        await page.getByRole('button', { name: 'Login' }).click();
+        await expect(page.getByText('Email format is invalid')).toBeVisible();
     });
 });
 
