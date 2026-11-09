@@ -1,10 +1,12 @@
 // S19: login tests (actions and assertions)
 import { test, expect } from '@playwright/test';
+import { LoginPage } from '../pages/LoginPage';
 
 test.describe('Login', () => {
 
     test.beforeEach(async ({ page }) => {
-        await page.goto('https://practicesoftwaretesting.com/auth/login');
+        const loginPage = new LoginPage(page);
+        await loginPage.goto();
     });
 
     // test.afterEach(async ({ page }) => {
@@ -12,9 +14,8 @@ test.describe('Login', () => {
     // });
 
     test('customer can log in', async ({ page }) => {
-        await page.getByLabel('Email address').fill('srbhingole8@gmail.com');
-        await page.getByLabel('Password *', { exact: true }).fill('2110@Saurabh');
-        await page.getByRole('button', { name: 'Login' }).click();
+        const loginPage = new LoginPage(page);
+        await loginPage.login('srbhingole8@gmail.com', '2110@Saurabh');
         await expect(page).toHaveURL(/account/);
         await expect(page.getByRole('heading', { name: 'My account' })).toBeVisible();
         await expect(page.getByTestId('page-title')).toHaveText('My account');
@@ -26,11 +27,9 @@ test.describe('Login', () => {
     });
 
     test('wrong password shows an error', async ({ page }) => {
-        await page.getByLabel('Email address').fill('admin@practicesoftwaretesting.com');
-        await expect(page.getByTestId('email')).toHaveValue('admin@practicesoftwaretesting.com');
-        await page.getByLabel('Password *', { exact: true }).fill('wrongpass');
-        await page.getByLabel('Password *', { exact: true }).press('Enter');
-        await expect(page.getByTestId('login-error')).toHaveText('Invalid email or password');
+        const loginPage = new LoginPage(page);
+        await loginPage.login('admin@practicesoftwaretesting.com', 'wrongpass');
+        await expect(loginPage.errorMessage).toHaveText('Invalid email or password');
         await expect(page).toHaveURL(/login/);
         await expect(page.getByRole('heading', { name: 'My account' })).not.toBeVisible();
     });
